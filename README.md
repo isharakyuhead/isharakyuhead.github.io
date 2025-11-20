@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHAOS PROFILE</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .controls {
+            margin-top: 10px;
+        }
+
+        #search, #filter {
+            padding: 8px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 4px;
+        }
+
+        #profiles-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .profile-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            padding: 15px;
+        }
+
+        .profile-info h3 {
+            margin: 0;
+            color: #333;
+        }
+
+        .profile-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        #modal-details {
+            margin-top: 20px;
+        }
+
+        #modal-details img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            float: left;
+            margin-right: 20px;
+        }
+
+        #modal-details h2 {
+            margin-top: 0;
+        }
+
+        #modal-details p {
+            margin: 10px 0;
+        }
+
+        @media (max-width: 768px) {
+            #profiles-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CHAOS PROFILE</h1>
+        <div class="controls">
+            <input type="text" id="search" placeholder="Search by name or major...">
+            <select id="filter">
+                <option value="all">All</option>
+                <option value="motivation">Motivation</option>
+                <option value="major">Major</option>
+                <option value="address">Address</option>
+                <option value="song">Song</option>
+                <option value="interest">Interest</option>
+            </select>
+        </div>
+    </header>
+    <main id="profiles-container">
+    </main>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal-details"></div>
+        </div>
+    </div>
+    <script>
+        const profiles = [
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Ahmad Faadhil Tiansyah",
+                major: "Blender/Digital Art",
+                address: "Sebarus",
+                song: "Summmer-GoodKid",
+                interest: "Sakuya",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Angga Susilo Putra",
+                major: "After Effect",
+                address: "Gunung Sugih",
+                song: "Something About You-Khlaws",
+                interest: "Dia",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Atha Dio Albany",
+                major: "IHS",
+                address: "Way Empulau Ulu",
+                song: "Perfect-Ed Sheeran",
+                interest: "Nyontek",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Aqila Abrar Rabbani",
+                major: "PowerPoint",
+                address: "Sukamenanti",
+                song: "Tante Culik Aku Dong-Mala Agatha",
+                interest: "ITB Ganteng",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Ayu Lestari",
+                major: "Word",
+                address: "Canggu",
+                song: "Fearless-Taylor Swift",
+                interest: "Negara Canggu",
+                picture: "<img src=;JAVASCRIPT/Bagi%20Jurusan/ayu.jpg'>"
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Carissa Ardelia Verda",
+                major: "Excel",
+                address: "Way Empulau Ulu",
+                song: "Auntumn-NIKI",
+                interest: "K-Drama",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Choirul Fadly",
+                major: "Auto Cad",
+                address: "Sebarus",
+                song: "",
+                interest: "Rohis",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Decha Risalatul Hida",
+                major: "HTML",
+                address: "Taman Jaya",
+                song: "Head Over Heels-Tears for Fears",
+                interest: "Book",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Dhea Ivana Putri Simanjuntak",
+                major: "Auto Cad",
+                address: "Gunung Sugih",
+                song: "Askarweda",
+                interest: "Nassar Oppa",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Dipa Adieni Putri",
+                major: "Adobe Photoshop",
+                address: "Taman Jaya",
+                song: "Lowkey-NIKI",
+                interest: "OHK",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Dwika Putra",
+                major: "C++",
+                address: "Sebarus",
+                song: "Lady Brown-Nujabes",
+                interest: "Game",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Faiz Alfarizi",
+                major: "PowerPoint",
+                address: "Sukamenanti",
+                song: "Semua Aku Dirayakan-Nadin Hamizah",
+                interest: "Nongki",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Fakih Adnal HR",
+                major: "Coral Draw",
+                address: "Way Empulau Ulu",
+                song: "",
+                interest: "Istriku",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Hayfa Rizky Aulia",
+                major: "Coral Draw",
+                address: "Seranggas",
+                song: "Perfect-Ed Sheeran",
+                interest: "Jumat Berkah",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Hesekiel Marulitua Situmeang",
+                major: "Game Maker",
+                address: "Way Mengaku",
+                song: "",
+                interest: "Gambling",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Hilwa Hana Putri Noya",
+                major: "Excel",
+                address: "Taman Jaya",
+                song: "Fantasy-Bazzy",
+                interest: "The Smart One",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Idham Syahputra",
+                major: "IHS",
+                address: "Way Mengaku",
+                song: "Just The Way You Are-Bruno Mars",
+                interest: "Itu",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Khoirunnisa Pusri Aqila",
+                major: "Blender",
+                address: "Pasar Liwa",
+                song: "Out of My League - LANY",
+                interest: "Casper ADWD (Tupai)",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "M. Faiz Alfitra Jaya",
+                major: "C++",
+                address: "Simpang Serdang",
+                song: "Hero-Mili",
+                interest: "Game",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "M. Fitzal Mustaqim",
+                major: "After Effect",
+                address: "Kalianda",
+                song: "I Hear a Symphony-Cody Fry",
+                interest: "ICT",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "M. Latif Ardya Rasyid",
+                major: "Auto Cad",
+                address: "Watas",
+                song: "Last Night on Earth-Green Day",
+                interest: "Bule Inggris",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Muhamad Gibran Al Hilabi",
+                major: "After Effect",
+                address: "Sebarus",
+                song: "Snooze-SZA",
+                interest: "Number",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Nadya Namira Molissa",
+                major: "Adobe Animate/Digital Art",
+                address: "Seranggas",
+                song: "(I Always Kill) THe Things I Love-The Real TUesday Weld",
+                interest: "Liu Woods",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Navisa Heniati",
+                major: "PowerPoint",
+                address: "Pekon Balak",
+                song: "",
+                interest: "",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Olifhia Laura Junita",
+                major: "Blog",
+                address: "Kegeringan",
+                song: "",
+                interest: "",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Salwa Nada Afifah",
+                major: "Blog",
+                address: "Lumbok Seminung",
+                song: "",
+                interest: "",
+                picture: ""
+            },
+            {
+                motivation: "Nanti Tau Sendiri",
+                name: "Syaharani",
+                major: "Word",
+                address: "Sembayung Asri",
+                song: "goodnight n go-Ariana Grande",
+                interest: "Duit",
+                picture: ""
+            }
+        ];
+
+        const container = document.getElementById('profiles-container');
+        const searchInput = document.getElementById('search');
+        const filterSelect = document.getElementById('filter');
+        const modal = document.getElementById('modal');
+        const modalDetails = document.getElementById('modal-details');
+        const closeBtn = document.querySelector('.close');
+
+        function renderProfiles(filteredProfiles) {
+            container.innerHTML = '';
+            filteredProfiles.forEach(profile => {
+                const card = document.createElement('div');
+                card.className = 'profile-card';
+                card.innerHTML = `
+                    <img src="${profile.picture || 'https://via.placeholder.com/250x200?text=No+Image'}" alt="${profile.name}">
+                    <div class="profile-info">
+                        <h3>${profile.name}</h3>
+                        <p>${profile.motivation}</p>  <!-- DIUBAH DARI major KE motivation -->
+                    </div>
+                `;
+                card.addEventListener('click', () => openModal(profile));
+                container.appendChild(card);
+            });
+        }
+
+        function openModal(profile) {
+            modalDetails.innerHTML = `
+                <img src="${profile.picture || 'https://via.placeholder.com/150x150?text=No+Image'}" alt="${profile.name}">
+                <h2>${profile.name}</h2>
+                <p><strong>Motivation:</strong> ${profile.motivation}</p>
+                <p><strong>Major:</strong> ${profile.major}</p>
+                <p><strong>Address:</strong> ${profile.address}</p>
+                <p><strong>Song:</strong> ${profile.song || 'Not specified'}</p>
+                <p><strong>Interest:</strong> ${profile.interest || 'Not specified'}</p>
+            `;
+            modal.style.display = 'block';
+        }
+
+        function filterProfiles() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filterValue = filterSelect.value;
+            const filtered = profiles.filter(profile => {
+                const matchesSearch = profile.name.toLowerCase().includes(searchTerm) || profile.motivation.toLowerCase().includes(searchTerm);
+                const matchesFilter = filterValue === 'all' || (profile[filterValue] && profile[filterValue].toLowerCase().includes(searchTerm));
+                return matchesSearch && matchesFilter;
+            });
+            renderProfiles(filtered);
+        }
+
+        searchInput.addEventListener('input', filterProfiles);
+        filterSelect.addEventListener('change', filterProfiles);
+        closeBtn.addEventListener('click', () => modal.style.display = 'none');
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+        });
+
+        renderProfiles(profiles);
+    </script>
+</body>
+</html>
+
+
